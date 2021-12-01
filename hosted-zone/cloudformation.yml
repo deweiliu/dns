@@ -18,7 +18,7 @@ Resources:
 
 Outputs:
   HostedZoneId:
-    Description: The Hosted ID of dliu.com
+    Description: The Hosted Zone ID of dliu.com
     Value: !Ref DLIUCOM
     Export:
       Name: DLIUCOMHostedZoneID
