@@ -18,7 +18,7 @@ pipeline {
                 }
             }
         }
-        stage('Stack Termination Project') {
+        stage('Stack Termination Protection') {
             steps {
                 dir('hosted-zone'){
                     sh 'aws cloudformation update-termination-protection --region eu-west-2 --stack-name DNS --enable-termination-protection'
