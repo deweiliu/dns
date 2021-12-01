@@ -11,7 +11,10 @@ pipeline {
         stage('Update Hosted Zone') {
             steps {
                 dir('hosted-zone'){
-                    sh 'aws cloudformation update-stack --region eu-west-2 --stack-name DNS --template-body file://cloudformation.yml --tags Key=service,Value=dns'
+                    sh '''
+                        aws cloudformation update-stack --region eu-west-2 --stack-name DNS --template-body file://cloudformation.yml --tags Key=service,Value=dns;
+                        aws cloudformation wait stack-update-complete --region eu-west-2 --stack-name DNS;
+                    '''
                 }
             }
         }
