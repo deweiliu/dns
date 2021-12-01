@@ -1,0 +1,62 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  MicrosoftBusinessMXRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !ImportValue DLIUCOMHostedZoneID
+      Name: dliu.com
+      Type: MX
+      TTL: "3600"
+      ResourceRecords:
+        - 0 dliu-com.mail.protection.outlook.com
+
+  MicrosoftBusinessCNameRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !ImportValue DLIUCOMHostedZoneID
+      Name: autodiscover.dliu.com
+      Type: CNAME
+      TTL: "3600"
+      ResourceRecords:
+        - autodiscover.outlook.com
+
+  MicrosoftBusinessTXTRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !ImportValue DLIUCOMHostedZoneID
+      Name: dliu.com
+      Type: TXT
+      TTL: "3600"
+      ResourceRecords:
+        - '"v=spf1 include:spf.protection.outlook.com ~all"'
+
+  MicrosoftBusinessDkimRecord1:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !ImportValue DLIUCOMHostedZoneID
+      Name: selector1._domainkey.dliu.com
+      Type: CNAME
+      TTL: "3600"
+      ResourceRecords:
+        - selector1-dliu-com._domainkey.deweiliu.onmicrosoft.com
+
+  MicrosoftBusinessDkimRecord2:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !ImportValue DLIUCOMHostedZoneID
+      Name: selector2._domainkey.dliu.com
+      Type: CNAME
+      TTL: "3600"
+      ResourceRecords:
+        - selector2-dliu-com._domainkey.deweiliu.onmicrosoft.com
+
+  MicrosoftBusinessDmarcRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !ImportValue DLIUCOMHostedZoneID
+      Name: _dmarc.dliu.com
+      Type: TXT
+      TTL: "3600"
+      ResourceRecords:
+        # DMARC record defaults: pct=100; rf=afrf;
+        - '"v=DMARC1; p=quarantine; fo=1; rua=mailto:dmarc-failure@dliu.com;"'
