@@ -1,0 +1,19 @@
+pipeline {
+    agent {
+        label 'deployer-slave-amazon-linux'
+    }
+
+    options {
+        timeout(time: 10, unit: 'MINUTES')
+    }
+
+    stages {
+        stage('Update Hosted Zone') {
+            steps {
+                dir('hosted-zone'){
+                    sh 'aws cloudformation update-stack --stack-name DNS --template-body file://cloudformation.yml --tags Key=service,Value=dns'
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,1 @@
+aws cloudformation update-stack --stack-name DNS --template-body file://cloudformation.yml --tags Key=service,Value=dns;
