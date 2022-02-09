@@ -29,7 +29,10 @@ Resources:
       Type: TXT
       TTL: "3600"
       ResourceRecords:
+        # Microsoft Exchange SPF
         - '"v=spf1 include:spf.protection.outlook.com ~all"'
+        # Google search verification
+        - '"google-site-verification=xCP_ZUQTjQReN0xhcagY6pTSi12Y1jIuNGeEUWzPRSg"'
 
   MicrosoftBusinessDkimRecord1:
     Type: AWS::Route53::RecordSet
