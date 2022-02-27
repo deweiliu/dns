@@ -6,16 +6,6 @@ Resources:
     Properties:
       Name: dliu.com
 
-  WildcardRecord:
-    Type: AWS::Route53::RecordSet
-    Properties:
-      HostedZoneId: !Ref DLIUCOM
-      Name: "*.dliu.com"
-      Type: CNAME
-      TTL: "3600"
-      ResourceRecords:
-        - "dliu.com"
-
 Outputs:
   HostedZoneId:
     Description: The Hosted Zone ID of dliu.com

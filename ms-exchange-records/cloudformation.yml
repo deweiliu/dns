@@ -64,3 +64,13 @@ Resources:
       ResourceRecords:
         # DMARC record defaults: pct=100; rf=afrf;
         - '"v=DMARC1; p=quarantine; fo=1; rua=mailto:dmarc-failure@dliu.com;"'
+
+  WildcardRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !ImportValue DLIUCOMHostedZoneID
+      Name: "*.dliu.com"
+      Type: CNAME
+      TTL: "3600"
+      ResourceRecords:
+        - "dliu.com"
