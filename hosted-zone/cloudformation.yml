@@ -6,6 +6,23 @@ Resources:
     Properties:
       Name: dliu.com
 
+  DNSSEC:
+    Type: AWS::Route53::DNSSEC
+    Properties: 
+      HostedZoneId: !ImportValue DLIUCOMHostedZoneID
+
+  DNSSECKSK:
+    Type: AWS::Route53::KeySigningKey
+    Properties: 
+      HostedZoneId: !ImportValue DLIUCOMHostedZoneID
+      Name: default_ksk
+      Status: ACTIVE
+      KeyManagementServiceArn: !Join
+        - ''
+        - - 'arn:aws:kms:us-east-1:'
+          - !Ref AWS::AccountId
+          - ':alias/default-dnssec-ksk'
+
 Outputs:
   HostedZoneId:
     Description: The Hosted Zone ID of dliu.com

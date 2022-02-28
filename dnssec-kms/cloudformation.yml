@@ -1,0 +1,55 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: ATTENTION! This file contains important DNS configurations
+Resources:
+  Kms:
+    Type: AWS::KMS::Key
+    Properties: 
+      Enabled: true
+      EnableKeyRotation: false
+      KeySpec: ECC_NIST_P256
+      KeyUsage: SIGN_VERIFY
+      MultiRegion: false
+      PendingWindowInDays: 7
+      KeyPolicy:
+        Version: '2012-10-17'
+        Id: dnssec-policy
+        Statement:
+        - Sid: Enable IAM User Permissions
+          Effect: Allow
+          Principal:
+            AWS: !Join
+              - ''
+              - - 'arn:aws:iam::'
+                - !Ref AWS::AccountId
+                - ':root'
+          Action: kms:*
+          Resource: "*"
+        - Sid: Allow Route 53 DNSSEC Service
+          Effect: Allow
+          Principal:
+            Service: dnssec-route53.amazonaws.com
+          Action:
+          - kms:DescribeKey
+          - kms:GetPublicKey
+          - kms:Sign
+          Resource: "*"
+          Condition:
+            StringEquals:
+              aws:SourceAccount: !Ref AWS::AccountId
+            ArnLike:
+              aws:SourceArn: arn:aws:route53:::hostedzone/*
+        - Sid: Allow Route 53 DNSSEC to CreateGrant
+          Effect: Allow
+          Principal:
+            Service: dnssec-route53.amazonaws.com
+          Action: kms:CreateGrant
+          Resource: "*"
+          Condition:
+            Bool:
+              kms:GrantIsForAWSResource: 'true'
+
+  KmsAlias:
+    Type: AWS::KMS::Alias
+    Properties: 
+      AliasName: alias/default-dnssec-ksk
+      TargetKeyId: !Ref Kms

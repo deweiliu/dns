@@ -1,7 +1,0 @@
-AWSTemplateFormatVersion: 2010-09-09
-Description: ATTENTION! This file contains important DNS configurations
-Resources:
-  DNSSEC:
-    Type: AWS::Route53::DNSSEC
-    Properties: 
-      HostedZoneId: !ImportValue DLIUCOMHostedZoneID
