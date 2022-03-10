@@ -1,0 +1,29 @@
+pipeline {
+    agent {
+        label 'deployer-slave-amazon-linux'
+    }
+
+    options {
+        timeout(time: 10, unit: 'MINUTES')
+    }
+
+    stages {
+        stage('Generate KMS Key') {
+            steps {
+                dir('hosted-zone'){
+                    sh '''
+                        aws cloudformation update-stack --region us-east-1 --stack-name DNSSECKMS --template-body file://dnssec-kms/cloudformation.yml --tags Key=service,Value=dns
+                        aws cloudformation wait stack-update-complete --region us-east-1 --stack-name DNSSECKMS;
+                    '''
+                }
+            }
+        }
+        stage('Stack Termination Protection') {
+            steps {
+                dir('hosted-zone'){
+                    sh 'aws cloudformation update-termination-protection --region us-east-1 --stack-name DNSSECKMS --enable-termination-protection'
+                }
+            }
+        }        
+    }
+}
