@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: ATTENTION! This file contains important DNS configurations
+Description: ATTENTION! This file contains important DNS configurations.
 Resources:
   DLIUCOM:
     Type: AWS::Route53::HostedZone
@@ -8,20 +8,24 @@ Resources:
 
   DNSSEC:
     Type: AWS::Route53::DNSSEC
-    Properties: 
+    Properties:
       HostedZoneId: !ImportValue DLIUCOMHostedZoneID
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
 
   DNSSECKSK:
     Type: AWS::Route53::KeySigningKey
-    Properties: 
+    Properties:
       HostedZoneId: !ImportValue DLIUCOMHostedZoneID
       Name: default_ksk
       Status: ACTIVE
       KeyManagementServiceArn: !Join
-        - ''
-        - - 'arn:aws:kms:us-east-1:'
+        - ""
+        - - "arn:aws:kms:us-east-1:"
           - !Ref AWS::AccountId
-          - ':alias/default-dnssec-ksk'
+          - ":alias/default-dnssec-ksk"
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
 
 Outputs:
   HostedZoneId:
