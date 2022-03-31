@@ -65,6 +65,46 @@ Resources:
         # DMARC record defaults: pct=100; rf=afrf;
         - '"v=DMARC1; p=quarantine; fo=1; rua=mailto:dmarc-failure@dliu.com;"'
 
+  MicrosoftSkypeServiceRecord1:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !ImportValue DLIUCOMHostedZoneID
+      Name: sip.dliu.com
+      Type: CNAME
+      TTL: "3600"
+      ResourceRecords:
+        - sipdir.online.lync.com.
+
+  MicrosoftSkypeServiceRecord2:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !ImportValue DLIUCOMHostedZoneID
+      Name: lyncdiscover.dliu.com
+      Type: CNAME
+      TTL: "3600"
+      ResourceRecords:
+        - webdir.online.lync.com.
+
+  MicrosoftSkypeServiceRecord3:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !ImportValue DLIUCOMHostedZoneID
+      Name: _sip._tls.dliu.com
+      Type: SRV
+      TTL: "3600"
+      ResourceRecords:
+        - 100 1 443 sipdir.online.lync.com.
+
+  MicrosoftSkypeServiceRecord4:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !ImportValue DLIUCOMHostedZoneID
+      Name: _sipfederationtls._tcp.dliu.com
+      Type: SRV
+      TTL: "3600"
+      ResourceRecords:
+        - 100 1 5061 sipfed.online.lync.com.
+
   WildcardRecord:
     Type: AWS::Route53::RecordSet
     Properties:
