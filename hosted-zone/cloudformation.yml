@@ -1,22 +1,28 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: ATTENTION! This file contains important DNS configurations.
+Parameters:
+  MainDomain:
+    Type: String
+    Default: dliu.com
 Resources:
-  DLIUCOM:
+  MainHostedZone:
     Type: AWS::Route53::HostedZone
     Properties:
-      Name: dliu.com
+      Name: !Ref MainDomain
 
   DNSSEC:
     Type: AWS::Route53::DNSSEC
     Properties:
-      HostedZoneId: !ImportValue DLIUCOMHostedZoneID
+      HostedZoneId: !Ref MainHostedZone
     DeletionPolicy: Delete
     UpdateReplacePolicy: Delete
+    DependsOn:
+      - "DNSSECKSK"
 
   DNSSECKSK:
     Type: AWS::Route53::KeySigningKey
     Properties:
-      HostedZoneId: !ImportValue DLIUCOMHostedZoneID
+      HostedZoneId: !Ref MainHostedZone
       Name: default_ksk
       Status: ACTIVE
       KeyManagementServiceArn: !Join
@@ -28,8 +34,15 @@ Resources:
     UpdateReplacePolicy: Delete
 
 Outputs:
-  HostedZoneId:
-    Description: The Hosted Zone ID of dliu.com
-    Value: !Ref DLIUCOM
+  MainHostedZoneId:
+    Description: Main Hosted Zone ID
+    Value: !Ref MainHostedZone
     Export:
-      Name: DLIUCOMHostedZoneID
+      Name: MainHostedZoneId
+  
+  MainDomain:
+    Description: Main Domain Name
+    Value: !Ref MainDomain
+    Export:
+      Name: MainDomain
+

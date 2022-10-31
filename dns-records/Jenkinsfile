@@ -1,0 +1,29 @@
+pipeline {
+    agent {
+        label 'deployer-slave-amazon-linux'
+    }
+
+    options {
+        timeout(time: 10, unit: 'MINUTES')
+    }
+
+    stages {
+        stage('Update DNS Records') {
+            steps {
+                dir('dns-records'){
+                    sh '''
+                        aws cloudformation update-stack --region eu-west-2 --stack-name DNSRecords --template-body file://cloudformation.yml --tags Key=service,Value=dns;
+                        aws cloudformation wait stack-update-complete --region eu-west-2 --stack-name DNSRecords;
+                    '''
+                }
+            }
+        }
+        stage('Stack Termination Protection') {
+            steps {
+                dir('dns-records'){
+                    sh 'aws cloudformation update-termination-protection --region eu-west-2 --stack-name DNSRecords --enable-termination-protection'
+                }
+            }
+        }        
+    }
+}

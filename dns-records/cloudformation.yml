@@ -1,30 +1,31 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: ATTENTION! This file contains important DNS configurations
+
 Resources:
-  MicrosoftBusinessMXRecord:
+  MailExchangeRecord:
     Type: AWS::Route53::RecordSet
     Properties:
-      HostedZoneId: !ImportValue DLIUCOMHostedZoneID
+      HostedZoneId: !ImportValue MainHostedZoneId
       Name: dliu.com
       Type: MX
       TTL: "3600"
       ResourceRecords:
         - 0 dliu-com.mail.protection.outlook.com
-
-  MicrosoftBusinessCNameRecord:
+  DmarcRecord:
     Type: AWS::Route53::RecordSet
     Properties:
-      HostedZoneId: !ImportValue DLIUCOMHostedZoneID
-      Name: autodiscover.dliu.com
-      Type: CNAME
+      HostedZoneId: !ImportValue MainHostedZoneId
+      Name: _dmarc.dliu.com
+      Type: TXT
       TTL: "3600"
       ResourceRecords:
-        - autodiscover.outlook.com
+        # DMARC record defaults: pct=100; rf=afrf;
+        - '"v=DMARC1; p=quarantine; fo=1; rua=mailto:dmarc-failure@dliu.com;"'
 
-  MicrosoftBusinessTXTRecord:
+  TXTRecord:
     Type: AWS::Route53::RecordSet
     Properties:
-      HostedZoneId: !ImportValue DLIUCOMHostedZoneID
+      HostedZoneId: !ImportValue MainHostedZoneId
       Name: dliu.com
       Type: TXT
       TTL: "3600"
@@ -34,10 +35,20 @@ Resources:
         # Google search verification
         - '"google-site-verification=xCP_ZUQTjQReN0xhcagY6pTSi12Y1jIuNGeEUWzPRSg"'
 
+  MicrosoftBusinessCNameRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !ImportValue MainHostedZoneId
+      Name: autodiscover.dliu.com
+      Type: CNAME
+      TTL: "3600"
+      ResourceRecords:
+        - autodiscover.outlook.com
+
   MicrosoftBusinessDkimRecord1:
     Type: AWS::Route53::RecordSet
     Properties:
-      HostedZoneId: !ImportValue DLIUCOMHostedZoneID
+      HostedZoneId: !ImportValue MainHostedZoneId
       Name: selector1._domainkey.dliu.com
       Type: CNAME
       TTL: "3600"
@@ -47,28 +58,17 @@ Resources:
   MicrosoftBusinessDkimRecord2:
     Type: AWS::Route53::RecordSet
     Properties:
-      HostedZoneId: !ImportValue DLIUCOMHostedZoneID
+      HostedZoneId: !ImportValue MainHostedZoneId
       Name: selector2._domainkey.dliu.com
       Type: CNAME
       TTL: "3600"
       ResourceRecords:
         - selector2-dliu-com._domainkey.deweiliu.onmicrosoft.com
 
-  MicrosoftBusinessDmarcRecord:
-    Type: AWS::Route53::RecordSet
-    Properties:
-      HostedZoneId: !ImportValue DLIUCOMHostedZoneID
-      Name: _dmarc.dliu.com
-      Type: TXT
-      TTL: "3600"
-      ResourceRecords:
-        # DMARC record defaults: pct=100; rf=afrf;
-        - '"v=DMARC1; p=quarantine; fo=1; rua=mailto:dmarc-failure@dliu.com;"'
-
   MicrosoftSkypeServiceRecord1:
     Type: AWS::Route53::RecordSet
     Properties:
-      HostedZoneId: !ImportValue DLIUCOMHostedZoneID
+      HostedZoneId: !ImportValue MainHostedZoneId
       Name: sip.dliu.com
       Type: CNAME
       TTL: "3600"
@@ -78,7 +78,7 @@ Resources:
   MicrosoftSkypeServiceRecord2:
     Type: AWS::Route53::RecordSet
     Properties:
-      HostedZoneId: !ImportValue DLIUCOMHostedZoneID
+      HostedZoneId: !ImportValue MainHostedZoneId
       Name: lyncdiscover.dliu.com
       Type: CNAME
       TTL: "3600"
@@ -88,7 +88,7 @@ Resources:
   MicrosoftSkypeServiceRecord3:
     Type: AWS::Route53::RecordSet
     Properties:
-      HostedZoneId: !ImportValue DLIUCOMHostedZoneID
+      HostedZoneId: !ImportValue MainHostedZoneId
       Name: _sip._tls.dliu.com
       Type: SRV
       TTL: "3600"
@@ -98,7 +98,7 @@ Resources:
   MicrosoftSkypeServiceRecord4:
     Type: AWS::Route53::RecordSet
     Properties:
-      HostedZoneId: !ImportValue DLIUCOMHostedZoneID
+      HostedZoneId: !ImportValue MainHostedZoneId
       Name: _sipfederationtls._tcp.dliu.com
       Type: SRV
       TTL: "3600"
@@ -108,7 +108,7 @@ Resources:
   WildcardRecord:
     Type: AWS::Route53::RecordSet
     Properties:
-      HostedZoneId: !ImportValue DLIUCOMHostedZoneID
+      HostedZoneId: !ImportValue MainHostedZoneId
       Name: "*.dliu.com"
       Type: CNAME
       TTL: "3600"
